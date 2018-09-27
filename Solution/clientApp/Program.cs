@@ -29,8 +29,8 @@ namespace Autodesk.Inventor.IO.Sample
 {
     class Credentials
     {
-        //get your ConsumerKey/ConsumerSecret at http://developer.autodesk.com
-        //loading the key and the secret from the given json files located in the config file
+        // get your ConsumerKey/ConsumerSecret at http://forge.autodesk.com
+        // store them in FORGE_CLIENT_ID and FORGE_CLIENT_SECRET environment variables
         public string ConsumerKey { get; set; }
         public string ConsumerSecret { get; set; }
     }
@@ -136,7 +136,7 @@ namespace Autodesk.Inventor.IO.Sample
             {
                 dynamic payload = new JObject();
                 payload.bucketKey = bucketId;
-                payload.policyKey = $"persistent"; // see https://developer.autodesk.com/en/docs/data/v2/overview/retention-policy/ for options
+                payload.policyKey = $"persistent"; // see https://forge.autodesk.com/en/docs/data/v2/overview/retention-policy/ for options
                 Console.WriteLine($"Creating bucket {bucketId}...");
                 response = await s_ForgeDmClient.CreateBucket(payload.ToString());
                 if (response.ReportIfError("Exception when creating bucket."))
