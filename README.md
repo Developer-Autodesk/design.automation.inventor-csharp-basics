@@ -36,6 +36,10 @@
 # Understanding the sample
 A detailed description of the sample is available in [Docs/DeveloperNotes.md](Docs/DeveloperNotes.md).
 
+## How to debug samplePlugin locally
+
+Make sure that Inventor is installed and its license is not expired. Set debugPluginLocally as startup project and start it. A new instance of Inventor will be launched. If there are any break points in the samplePlugin, the program execution will break.
+
 ## Quotas and Limits
 Apps, Activies and WorkItems have quotoas and limits. To find out more information on this can be found in [Docs/QuotasAndRestrictions.md](Docs/QuotasAndRestrictions.md).
 
