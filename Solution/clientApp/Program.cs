@@ -251,9 +251,9 @@ namespace Autodesk.Inventor.IO.Sample
                     return false;
             }
 
-            string localPath = "../../" + s_Config.LocalAppPackage;
-            Console.WriteLine($"Uploading zip file " + localPath + "...");
-            bool uploadSuccessful = await UploadFileAsync(uploadParams["formData"], uploadUrl, localPath);
+            string absolutePath = Path.GetFullPath("../../" + s_Config.LocalAppPackage);
+            Console.WriteLine($"Uploading zip file " + absolutePath + "...");
+            bool uploadSuccessful = await UploadFileAsync(uploadParams["formData"], uploadUrl, absolutePath);
             if (!uploadSuccessful)
             {
                 Console.WriteLine("Failed to upload zip file.");
