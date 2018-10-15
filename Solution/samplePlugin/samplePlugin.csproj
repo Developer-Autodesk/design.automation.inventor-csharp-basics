@@ -67,6 +67,7 @@
     <Content Include="samplePlugin.Inventor.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="ZipAppPackage.csx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -76,8 +77,7 @@ mt.exe -manifest "$(ProjectDir)samplePlugin.X.manifest" -outputresource:"$(Targe
 xcopy $(ProjectDir)PackageContents.xml $(TargetDir)..\Bundle\samplePlugin.bundle\ /Y
 xcopy  $(TargetDir)*.*  $(TargetDir)..\Bundle\samplePlugin.bundle\Contents\ /Y
 
-$(SolutionDir)ZipAppPackage\bin\$(ConfigurationName)\ZipAppPackage.exe  $(TargetDir)..\Bundle\ $(SolutionDir)\Output samplePlugin.bundle.zip
-</PostBuildEvent>
+csi.exe $(SolutionDir)\samplePlugin\ZipAppPackage.csx $(TargetDir)..\Bundle\ $(SolutionDir)\Output samplePlugin.bundle.zip</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

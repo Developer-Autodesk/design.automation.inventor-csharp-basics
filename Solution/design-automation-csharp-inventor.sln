@@ -9,11 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "clientApp", "clientApp\clie
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "samplePlugin", "samplePlugin\samplePlugin.csproj", "{F1C9D7E2-53A8-4E4E-AF9E-931CA891715D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F15EB857-DBB4-4CD1-827C-EC8FB6EB945E} = {F15EB857-DBB4-4CD1-827C-EC8FB6EB945E}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZipAppPackage", "ZipAppPackage\ZipAppPackage.csproj", "{F15EB857-DBB4-4CD1-827C-EC8FB6EB945E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debugPluginLocally", "debugPluginLocally\debugPluginLocally.csproj", "{96C767E6-7828-4545-A4C9-EA2346D9E17F}"
 EndProject
@@ -31,10 +26,6 @@ Global
 		{F1C9D7E2-53A8-4E4E-AF9E-931CA891715D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1C9D7E2-53A8-4E4E-AF9E-931CA891715D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1C9D7E2-53A8-4E4E-AF9E-931CA891715D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F15EB857-DBB4-4CD1-827C-EC8FB6EB945E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F15EB857-DBB4-4CD1-827C-EC8FB6EB945E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F15EB857-DBB4-4CD1-827C-EC8FB6EB945E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F15EB857-DBB4-4CD1-827C-EC8FB6EB945E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{96C767E6-7828-4545-A4C9-EA2346D9E17F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96C767E6-7828-4545-A4C9-EA2346D9E17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96C767E6-7828-4545-A4C9-EA2346D9E17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
