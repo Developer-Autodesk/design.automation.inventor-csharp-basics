@@ -71,6 +71,9 @@ namespace Autodesk.Inventor.IO.Sample
         static ForgeDmClient s_ForgeDmClient;
         static readonly string s_alias = "prod";
         static string s_nickname;
+        // added below 2 attributes for UI.
+		static string height;
+        static string width;						 
 
         static void DownloadToDocs(string url, string localFile)
         {
@@ -380,7 +383,7 @@ namespace Autodesk.Inventor.IO.Sample
                     )),
                     // This shows passing parameters and values into the plug-in
                     new JProperty($"{s_Config.ParamArgName}", new JObject(
-                        new JProperty("url", "data:application/json,{\"height\":\"16 in\", \"width\":\"10 in\"}")
+                     new JProperty("url", "data:application/json,{\"height\":\""+height+" in\", \"width\":\""+width+" in\"}") // code changed to UI inputs
                     )),
                     // must match the output parameter in activity
                     new JProperty(s_Config.OutputPartArgName, new JObject(
@@ -436,7 +439,8 @@ namespace Autodesk.Inventor.IO.Sample
                     )),
                     // This shows passing parameters and values into the plug-in
                     new JProperty($"{s_Config.ParamArgName}", new JObject(
-                        new JProperty("url", "data:application/json,{\"handleOffset\":\"9 in\", \"height\":\"16 in\"}")
+		                 // code changed for UI input. Added 'width' param in assy as well. handleoffset param still remains hard coded.
+                        new JProperty("url", "data:application/json,{\"handleOffset\":\"9 in\", \"height\":\""+height+" in\", \"width\":\""+width+" in\"}")
                     )),
                     // must match the output parameter in activity
                     new JProperty(s_Config.OutputAssemblyArgName, new JObject(
@@ -485,8 +489,19 @@ namespace Autodesk.Inventor.IO.Sample
             }
         }
 
+		  [STAThread]		   
         static void Main(string[] args)
         {
+			 // Below 4 lines are for UI Input. 
+            Input_UI UI = new Input_UI();
+            UI.ShowDialog();
+            if (UI.IsCancelled)
+            {
+                return;
+            }; 
+            height = UI.Input_height;
+            width = UI.Input_width;
+								   
             Task t = MainAsync(args);
             t.Wait();
         }
