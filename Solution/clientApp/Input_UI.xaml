@@ -1,0 +1,26 @@
+﻿<Window x:Class="Autodesk.Inventor.IO.Input_UI"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Inventor IO Demo Application" Icon="/Resources/Inventor.ico" Height="300" Width="450" MinHeight="300" MinWidth="500"  >
+    <Grid ShowGridLines="False">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Image Grid.Row ="0" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="2" Source="/Resources/Capture.bmp" Margin="10,0,0,10.4" VerticalAlignment="Bottom" />
+        <Button x:Name="Apply_btn" Grid.Row ="2" Grid.Column="2" Content="Apply" Margin="10.4,40,5,10.4" Click="Apply_btn_Click" />
+        <Button x:Name="Cancel_btn" Grid.Row ="2" Grid.Column="3" Content="Cancel"  Margin="5,40,19.6,10.4" Click="Cancel_btn_Click" />
+        <Label x:Name="Height_lbl" Content="Height (inch)" Grid.Row ="1" Grid.Column="2" FontSize="18" VerticalAlignment="Center" />
+        <Label x:Name="Width_lbl" Content="Width (inch)" Grid.Row ="0" Grid.Column="2" FontSize="18" VerticalAlignment="Bottom" />
+        <TextBox x:Name="width_textbox" Grid.Row="0" Grid.Column ="3" TextWrapping="Wrap" Text="20" MaxLength="2" MinWidth="50" FontSize="18" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="28.4,0,28.6,3.4" PreviewTextInput="width_textbox_PreviewTextInput"  />
+        <TextBox x:Name="height_textbox" Grid.Row="1" Grid.Column ="3" TextWrapping="Wrap" Text="16" MaxLength="2" MinWidth="50" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" PreviewTextInput="height_textbox_PreviewTextInput"/>
+
+    </Grid>
+</Window>
