@@ -17,12 +17,14 @@
 /////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Autodesk.Inventor.IO.Sample
@@ -37,7 +39,7 @@ namespace Autodesk.Inventor.IO.Sample
 
     class AppProperties
     {
-        // Properties from the json config file located in the config folder
+        // Properties from the json config file located in the clientApp folder
         public string AppId { get; set; }
         public string EngineName { get; set; }
         public string LocalAppPackage { get; set; } // Your local app package
@@ -96,10 +98,6 @@ namespace Autodesk.Inventor.IO.Sample
             }
         }
 
-        static readonly string[] _postKeysV3 = { "key", "success_action_status", "success_action_redirect",  "content-type", "policy",
-                                                 "x-amz-signature", "x-amz-credential", "x-amz-algorithm",
-                                                 "x-amz-date", "x-amz-server-side-encryption", "x-amz-security-token" };
-
         static async Task<bool> UploadFileAsync(JToken formData, string url, string filePath)
         {
             try
@@ -108,7 +106,12 @@ namespace Autodesk.Inventor.IO.Sample
                 {
                     MultipartFormDataContent form = new MultipartFormDataContent();
 
-                    Array.ForEach(_postKeysV3, key => form.Add(new StringContent(formData[key]?.ToString()), key));
+                    var deserializedJToken = JsonConvert.DeserializeObject<Dictionary<string, object>>(formData.ToString());
+                    foreach (var token in deserializedJToken)
+                    {
+                        form.Add(new StringContent(token.Value?.ToString()), token.Key);
+                    }
+
                     form.Add(new ByteArrayContent(File.ReadAllBytes(filePath)), "file");
 
                     var responseMessage = await httpClient.PostAsync(url, form);
