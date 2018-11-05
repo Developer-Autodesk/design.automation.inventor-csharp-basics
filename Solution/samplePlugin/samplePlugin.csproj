@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="7z.NET, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\7z.NET.1.0.3\lib\net463\7z.NET.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="autodesk.inventor.interop, Version=23.0.0.0, Culture=neutral, PublicKeyToken=d84147f8b4276564, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -76,9 +82,16 @@ mt.exe -manifest "$(ProjectDir)samplePlugin.X.manifest" -outputresource:"$(Targe
 xcopy $(ProjectDir)PackageContents.xml $(TargetDir)..\Bundle\samplePlugin.bundle\ /Y
 xcopy  $(TargetDir)*.*  $(TargetDir)..\Bundle\samplePlugin.bundle\Contents\ /Y
 
-$(SolutionDir)ZipAppPackage\bin\$(ConfigurationName)\ZipAppPackage.exe  $(TargetDir)..\Bundle\ $(SolutionDir)\Output samplePlugin.bundle.zip
-</PostBuildEvent>
+del $(SolutionDir)Output\samplePlugin.bundle.zip
+7za.exe a -aoa -tzip -xr!*.exe $(SolutionDir)Output\samplePlugin.bundle.zip $(TargetDir)..\Bundle\samplePlugin.bundle</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\7z.NET.1.0.3\build\7z.NET.targets" Condition="Exists('..\packages\7z.NET.1.0.3\build\7z.NET.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\7z.NET.1.0.3\build\7z.NET.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\7z.NET.1.0.3\build\7z.NET.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
