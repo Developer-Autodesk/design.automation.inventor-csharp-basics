@@ -79,11 +79,11 @@
     <PostBuildEvent>call "%25vsappiddir%25..\..\VC\Auxiliary\Build\vcvars32.bat" x86		
 mt.exe -manifest "$(ProjectDir)samplePlugin.X.manifest" -outputresource:"$(TargetPath)";#2
 
-xcopy $(ProjectDir)PackageContents.xml $(TargetDir)..\Bundle\samplePlugin.bundle\ /Y
-xcopy  $(TargetDir)*.*  $(TargetDir)..\Bundle\samplePlugin.bundle\Contents\ /Y
+xcopy "$(ProjectDir)PackageContents.xml" "$(TargetDir)..\Bundle\samplePlugin.bundle\" /Y
+xcopy "$(TargetDir)*.*" "$(TargetDir)..\Bundle\samplePlugin.bundle\Contents\" /Y
 
-del $(SolutionDir)Output\samplePlugin.bundle.zip
-7za.exe a -aoa -tzip -xr!*.exe $(SolutionDir)Output\samplePlugin.bundle.zip $(TargetDir)..\Bundle\samplePlugin.bundle</PostBuildEvent>
+del "$(SolutionDir)Output\samplePlugin.bundle.zip"
+7za.exe a -aoa -tzip -xr!*.exe "$(SolutionDir)Output\samplePlugin.bundle.zip" "$(TargetDir)..\Bundle\samplePlugin.bundle"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\7z.NET.1.0.3\build\7z.NET.targets" Condition="Exists('..\packages\7z.NET.1.0.3\build\7z.NET.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
