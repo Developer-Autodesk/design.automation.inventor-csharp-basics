@@ -280,8 +280,8 @@ namespace Autodesk.Inventor.IO.Sample
 
             dynamic payload = new JObject();
             payload.engine = s_Config.EngineName;
-            payload.apps = new JArray($"{s_nickname}.{s_Config.AppId}+{s_alias}");
-            payload.commandLine = $"$(engine.path)\\InventorCoreConsole.exe /i $(args[{s_Config.ReqInputArgName}].path) /al $(apps[{s_Config.AppId}].path) $(args[{s_Config.ParamArgName}].path)";
+            payload.appbundles = new JArray($"{s_nickname}.{s_Config.AppId}+{s_alias}");
+            payload.commandLine = $"$(engine.path)\\InventorCoreConsole.exe /i $(args[{s_Config.ReqInputArgName}].path) /al $(appbundles[{s_Config.AppId}].path) $(args[{s_Config.ParamArgName}].path)";
             payload.settings = new JObject();
             payload.parameters = parameters;
 

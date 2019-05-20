@@ -23,7 +23,7 @@ Say - if activity used for IPT generation then work item should use `OutputIpt` 
   "receiver": "everyone",
   "body": {
     "id": "ChangeParams",
-    "commandLine": "$(engine.path)\\InventorCoreConsole.exe /i $(args[InventorDoc].path) /al $(apps[ChangeParams].path) $(args[InventorParams].path)",
+    "commandLine": "$(engine.path)\\InventorCoreConsole.exe /i $(args[InventorDoc].path) /al $(appbundles[ChangeParams].path) $(args[InventorParams].path)",
     "parameters": {
       "InventorDoc": {
         "verb": "get",
@@ -52,7 +52,7 @@ Say - if activity used for IPT generation then work item should use `OutputIpt` 
       }
     },
     "engine": "Autodesk.Inventor+22",
-    "apps": [ "Inventor.ChangeParams+prod" ],
+    "appbundles": [ "Inventor.ChangeParams+prod" ],
     "description": "Change parameters of a part or an assembly."
   }
 }
