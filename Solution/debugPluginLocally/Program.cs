@@ -46,20 +46,21 @@ namespace debugPluginLocally
         /// <param name="app"></param>
         private static void DebugSamplePlugin(InventorServer app)
         {
-            // get project directory
-            string projectdir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            // get solution directory
+            string solutiondir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            string inputFilesDir = System.IO.Path.Combine(solutiondir, @"clientApp\inputFiles\");
+            string inputFilesLocalDir = System.IO.Path.Combine(solutiondir, @"debugPluginLocally\inputFiles\");
 
             // get box.ipt absolute path
-            string boxPath = System.IO.Path.Combine(projectdir, @"inputFiles\", "box.ipt");
-
-            string boxPathCopy = System.IO.Path.Combine(projectdir, @"inputFiles\", "boxcopy.ipt");
+            string boxPath = System.IO.Path.Combine(inputFilesDir, "box.ipt");
+            string boxPathCopy = System.IO.Path.Combine(inputFilesLocalDir, "boxcopy.ipt");
 
             try
             {
                 // delete an existing file
                 System.IO.File.Delete(boxPathCopy);
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 Console.WriteLine("The specified file is in use. It might be open by Inventor");
                 return;
@@ -71,14 +72,18 @@ namespace debugPluginLocally
             // open box.ipt by Inventor
             Document doc = app.Documents.Open(boxPathCopy);
 
-            // get params.json absolute path
-            string paramsPath = System.IO.Path.Combine(projectdir, @"inputFiles\", "params.json");
+            // get paramsSmall.json absolute path
+            string paramsPathSmall = System.IO.Path.Combine(inputFilesDir, "paramsSmall.json");
+
+            // get paramsLarge.json absolute path
+            string paramsPathLarge = System.IO.Path.Combine(inputFilesDir, "paramsLarge.json");
 
             // create a name value map
             Inventor.NameValueMap map = app.TransientObjects.CreateNameValueMap();
 
             // add parameters into the map, do not change "_1". You may add more parameters "_2", "_3"...
-            map.Add("_1", paramsPath);
+            map.Add("_1", paramsPathSmall);
+            map.Add("_2", paramsPathLarge);
 
             // create an instance of samplePlugin
             samplePlugin.SampleAutomation plugin = new samplePlugin.SampleAutomation(app);

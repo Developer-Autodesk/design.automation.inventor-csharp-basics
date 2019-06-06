@@ -48,21 +48,33 @@ namespace Autodesk.Inventor.IO.Sample
         public string InputAssemblyZipFile { get; set; }
         public string AssemblyUnzipDir { get; set; }
         public string InputTopLevelAssembly { get; set; }
-        public string OutputPartFile { get; set; }
-        public string OutputImageFile { get; set; }
+        public string OutputPartSmallFile { get; set; }
+        public string OutputPartLargeFile { get; set; }
+        public string OutputPartSmallThumb { get; set; }
+        public string OutputPartLargeThumb { get; set; }
+        public string OutputImageSmallFile { get; set; }
+        public string OutputImageLargeFile { get; set; }
         public string OutputZipAssemblyFile { get; set; }
         public string PartAssemblyActivityId { get; set; }
         public string InventorIOBaseUrl { get; set; }
         public string ForgeDMBaseUrl { get; set; }
         public string ReqInputArgName { get; set; }
-        public string OutputPartArgName { get; set; }
+        public string OutputPartSmallArgName { get; set; }
+        public string OutputPartLargeArgName { get; set; }
+        public string OutputPartSmallThumbArgName { get; set; }
+        public string OutputPartLargeThumbArgName { get; set; }
         public string OutputAssemblyArgName { get; set; }
-        public string OutputImageArgName { get; set; }
+        public string OutputImageSmallArgName { get; set; }
+        public string OutputImageLargeArgName { get; set; }
         public string ErrorReport { get; set; }
         public string partReport { get; set; }
         public string assemblyReport { get; set; }
-        public string ParamFile { get; set; }
-        public string ParamArgName { get; set; }
+        public string ParamFileSmall { get; set; }
+        public string ParamFileLarge { get; set; }
+        public string ParamArgNameSmall { get; set; }
+        public string ParamArgNameLarge { get; set; }
+        public string LightFile { get; set; }
+        public string HeavyFile{ get; set; }
     }
 
     class Program
@@ -281,7 +293,7 @@ namespace Autodesk.Inventor.IO.Sample
             dynamic payload = new JObject();
             payload.engine = s_Config.EngineName;
             payload.appbundles = new JArray($"{s_nickname}.{s_Config.AppId}+{s_alias}");
-            payload.commandLine = $"$(engine.path)\\InventorCoreConsole.exe /i $(args[{s_Config.ReqInputArgName}].path) /al $(appbundles[{s_Config.AppId}].path) $(args[{s_Config.ParamArgName}].path)";
+            payload.commandLine = $"$(engine.path)\\InventorCoreConsole.exe /i $(args[{s_Config.ReqInputArgName}].path) /al $(appbundles[{s_Config.AppId}].path) $(args[{s_Config.ParamArgNameSmall}].path) $(args[{s_Config.ParamArgNameLarge}].path)";
             payload.settings = new JObject();
             payload.parameters = parameters;
 
@@ -338,41 +350,89 @@ namespace Autodesk.Inventor.IO.Sample
             JObject parameters = new JObject(
                 new JProperty(s_Config.ReqInputArgName, new JObject(
                     new JProperty("verb", "get"))),
-                new JProperty($"{s_Config.ParamArgName}", new JObject(
-                    new JProperty("localName", s_Config.ParamFile),
+                new JProperty($"{s_Config.ParamArgNameSmall}", new JObject(
+                    new JProperty("localName", s_Config.ParamFileSmall),
                     new JProperty("verb", "get"))),
-                new JProperty(s_Config.OutputPartArgName, new JObject(
+                new JProperty($"{s_Config.ParamArgNameLarge}", new JObject(
+                    new JProperty("localName", s_Config.ParamFileLarge),
+                    new JProperty("verb", "get"))),
+                new JProperty($"ImageLight", new JObject(
+                    new JProperty("ondemand", true),
+                    new JProperty("verb", "get"))),
+                new JProperty($"ImageHeavy", new JObject(
+                    new JProperty("ondemand", true),
+                    new JProperty("verb", "get"))),
+                new JProperty(s_Config.OutputPartSmallArgName, new JObject(
                     new JProperty("zip", false),
                     new JProperty("ondemand", false),
                     new JProperty("optional", true),
-                    new JProperty("localName", s_Config.OutputPartFile),
+                    new JProperty("localName", s_Config.OutputPartSmallFile),
                     new JProperty("verb", "post"))),
-                 new JProperty(s_Config.OutputAssemblyArgName, new JObject(
+                new JProperty(s_Config.OutputPartLargeArgName, new JObject(
+                    new JProperty("zip", false),
+                    new JProperty("ondemand", false),
+                    new JProperty("optional", true),
+                    new JProperty("localName", s_Config.OutputPartLargeFile),
+                    new JProperty("verb", "post"))),
+                new JProperty(s_Config.OutputPartSmallThumbArgName, new JObject(
+                    new JProperty("zip", false),
+                    new JProperty("ondemand", false),
+                    new JProperty("optional", true),
+                    new JProperty("localName", s_Config.OutputPartSmallThumb),
+                    new JProperty("verb", "post"))),
+                new JProperty(s_Config.OutputPartLargeThumbArgName, new JObject(
+                    new JProperty("zip", false),
+                    new JProperty("ondemand", false),
+                    new JProperty("optional", true),
+                    new JProperty("localName", s_Config.OutputPartLargeThumb),
+                    new JProperty("verb", "post"))),
+                new JProperty(s_Config.OutputAssemblyArgName, new JObject(
                     new JProperty("zip", false),
                     new JProperty("ondemand", false),
                     new JProperty("optional", true),
                     new JProperty("localName", s_Config.OutputZipAssemblyFile),
                     new JProperty("verb", "post")
                 )),
-                new JProperty(s_Config.OutputImageArgName, new JObject(
+                new JProperty(s_Config.OutputImageSmallArgName, new JObject(
                     new JProperty("zip", false),
                     new JProperty("ondemand", false),
                     new JProperty("optional", true),
-                    new JProperty("localName", s_Config.OutputImageFile),
+                    new JProperty("localName", s_Config.OutputImageSmallFile),
+                    new JProperty("verb", "post")
+                )),
+                new JProperty(s_Config.OutputImageLargeArgName, new JObject(
+                    new JProperty("zip", false),
+                    new JProperty("ondemand", false),
+                    new JProperty("optional", true),
+                    new JProperty("localName", s_Config.OutputImageLargeFile),
                     new JProperty("verb", "post")
                 ))
             );
-            return await CreateActivity(s_Config.PartAssemblyActivityId, $"{s_Config.ParamFile} {s_Config.OutputPartFile}", parameters);
+            return await CreateActivity(s_Config.PartAssemblyActivityId, $"{s_Config.ParamFileSmall} {s_Config.OutputPartSmallFile}", parameters);
+        }
+    
+        private static async Task<string> GetSignedInputUrl(string strFile)
+        {
+            ForgeRestResponse responseFile = await s_ForgeDmClient.CreateSignedUrl(getInputBucketKey(), strFile);
+            if (responseFile.ReportIfError("Exception creating signed url"))
+                return null;
+            return responseFile.GetResponseContentProperty("signedUrl");
+        }
+        private static async Task<string> GetSignedOutputUrl(string strFile)
+        {
+            ForgeRestResponse responseFile = await s_ForgeDmClient.CreateSignedUrl(getOutputBucketKey(), strFile);
+            if (responseFile.ReportIfError("Exception creating signed url"))
+                return null;
+            return responseFile.GetResponseContentProperty("signedUrl");
         }
 
         private static async Task<string> CreatePartWorkItem()
         {
             Console.WriteLine("Creating part work item...");
-            ForgeRestResponse response = await s_ForgeDmClient.CreateSignedUrl(getInputBucketKey(), s_Config.InputPartFile);
-            if (response.ReportIfError("Exception creating signed url for work item input."))
-                return null;
-
-            string inputSignedUrl = response.GetResponseContentProperty("signedUrl");
+            string inputSignedUrl = await GetSignedInputUrl(s_Config.InputPartFile);
+            string paramsSignedUrl = await GetSignedInputUrl(s_Config.ParamFileLarge);
+            string lightSignedUrl = await GetSignedInputUrl(s_Config.LightFile);
+            string heavySignedUrl = await GetSignedInputUrl(s_Config.HeavyFile);
 
             JObject payload = new JObject(
                 new JProperty("activityId", $"{s_nickname}.{s_Config.PartAssemblyActivityId}+{s_alias}"),
@@ -381,21 +441,68 @@ namespace Autodesk.Inventor.IO.Sample
                     new JProperty(s_Config.ReqInputArgName, new JObject(
                         new JProperty("url", inputSignedUrl)
                     )),
-                    // This shows passing parameters and values into the plug-in
-                    new JProperty($"{s_Config.ParamArgName}", new JObject(
+                    // This shows passing parameters and values into the plug-in by direct reference in the code
+                    new JProperty($"{s_Config.ParamArgNameSmall}", new JObject(
                         new JProperty("url", "data:application/json,{\"height\":\"16 in\", \"width\":\"10 in\"}")
                     )),
+                    // This shows passing parameters and values into the plug-in by reference to the file
+                    new JProperty($"{s_Config.ParamArgNameLarge}", new JObject(
+                        new JProperty("url", paramsSignedUrl)
+                    )),
+                    // This shows passing URL to onDemand parameter
+                    new JProperty($"ImageLight", new JObject(
+                        new JProperty("url", lightSignedUrl)
+                    )),
+                    // This shows passing URL to onDemand parameter
+                    new JProperty($"ImageHeavy", new JObject(
+                        new JProperty("url", heavySignedUrl)
+                    )),
                     // must match the output parameter in activity
-                    new JProperty(s_Config.OutputPartArgName, new JObject(
-                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputPartFile),
+                    new JProperty(s_Config.OutputPartSmallArgName, new JObject(
+                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputPartSmallFile),
                         new JProperty("verb", "put"),
                         new JProperty("headers", new JObject(
                             new JProperty("Authorization", s_ForgeDmClient.Authorization),
                             new JProperty("Content-type", "application/octet-stream")
                         ))
                     )),
-                    new JProperty(s_Config.OutputImageArgName, new JObject(
-                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputImageFile),
+                    // must match the output parameter in activity
+                    new JProperty(s_Config.OutputPartLargeArgName, new JObject(
+                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputPartLargeFile),
+                        new JProperty("verb", "put"),
+                        new JProperty("headers", new JObject(
+                            new JProperty("Authorization", s_ForgeDmClient.Authorization),
+                            new JProperty("Content-type", "application/octet-stream")
+                        ))
+                    )),
+                    // must match the output parameter in activity
+                    new JProperty(s_Config.OutputPartSmallThumbArgName, new JObject(
+                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputPartSmallThumb),
+                        new JProperty("verb", "put"),
+                        new JProperty("headers", new JObject(
+                            new JProperty("Authorization", s_ForgeDmClient.Authorization),
+                            new JProperty("Content-type", "application/octet-stream")
+                        ))
+                    )),
+                    // must match the output parameter in activity
+                    new JProperty(s_Config.OutputPartLargeThumbArgName, new JObject(
+                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputPartLargeThumb),
+                        new JProperty("verb", "put"),
+                        new JProperty("headers", new JObject(
+                            new JProperty("Authorization", s_ForgeDmClient.Authorization),
+                            new JProperty("Content-type", "application/octet-stream")
+                        ))
+                    )),
+                    new JProperty(s_Config.OutputImageSmallArgName, new JObject(
+                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputImageSmallFile),
+                        new JProperty("verb", "put"),
+                        new JProperty("headers", new JObject(
+                            new JProperty("Authorization", s_ForgeDmClient.Authorization),
+                            new JProperty("Content-type", "application/octet-stream")
+                        ))
+                    )),
+                    new JProperty(s_Config.OutputImageLargeArgName, new JObject(
+                        new JProperty("url", s_Config.ForgeDMBaseUrl + "buckets/" + getOutputBucketKey() + "/objects/" + s_Config.OutputImageLargeFile),
                         new JProperty("verb", "put"),
                         new JProperty("headers", new JObject(
                             new JProperty("Authorization", s_ForgeDmClient.Authorization),
@@ -405,7 +512,7 @@ namespace Autodesk.Inventor.IO.Sample
                 ))
             );
 
-            response = await s_ForgeDaClient.PostWorkItem(payload.ToString());
+            ForgeRestResponse response = await s_ForgeDaClient.PostWorkItem(payload.ToString());
             if (response.ReportIfError("Exception creating work item."))
                 return null;
 
@@ -438,7 +545,7 @@ namespace Autodesk.Inventor.IO.Sample
                         new JProperty("localName", "Assy")
                     )),
                     // This shows passing parameters and values into the plug-in
-                    new JProperty($"{s_Config.ParamArgName}", new JObject(
+                    new JProperty($"{s_Config.ParamArgNameSmall}", new JObject(
                         new JProperty("url", "data:application/json,{\"handleOffset\":\"9 in\", \"height\":\"16 in\"}")
                     )),
                     // must match the output parameter in activity
@@ -528,6 +635,22 @@ namespace Autodesk.Inventor.IO.Sample
                     return;
                 }
 
+                // Upload part params if necessary
+                if (!await EnsureInputExists(s_Config.ParamFileLarge))
+                {
+                    return;
+                }
+
+                // Upload images
+                if (!await EnsureInputExists(s_Config.LightFile))
+                {
+                    return;
+                }
+                if (!await EnsureInputExists(s_Config.HeavyFile))
+                {
+                    return;
+                }
+
                 // Upload assembly input if necessary
                 if (!await EnsureInputExists(s_Config.InputAssemblyZipFile))
                 {
@@ -582,9 +705,12 @@ namespace Autodesk.Inventor.IO.Sample
 
                 Console.WriteLine("Writing report log to: " + s_Config.partReport);
                 DownloadToDocs(reportUrl, s_Config.partReport);
-                response = await s_ForgeDmClient.CreateSignedUrl(getOutputBucketKey(), s_Config.OutputPartFile);
-                string outputDownloadUrl = response.GetResponseContentProperty("signedUrl");
-                DownloadToDocs(outputDownloadUrl, s_Config.OutputPartFile);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputPartSmallFile), s_Config.OutputPartSmallFile);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputPartLargeFile), s_Config.OutputPartLargeFile);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputPartSmallThumb), s_Config.OutputPartSmallThumb);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputPartLargeThumb), s_Config.OutputPartLargeThumb);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputImageSmallFile), s_Config.OutputImageSmallFile);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputImageLargeFile), s_Config.OutputImageLargeFile);
 
                 // Create an assembly activity work item
                 workItemId = await CreateAssemblyWorkItem();
@@ -616,9 +742,7 @@ namespace Autodesk.Inventor.IO.Sample
 
                 Console.WriteLine("Writing report log to: " + s_Config.assemblyReport);
                 DownloadToDocs(reportUrl, s_Config.assemblyReport);
-                response = await s_ForgeDmClient.CreateSignedUrl(getOutputBucketKey(), s_Config.OutputZipAssemblyFile);
-                outputDownloadUrl = response.GetResponseContentProperty("signedUrl");
-                DownloadToDocs(outputDownloadUrl, s_Config.OutputZipAssemblyFile);
+                DownloadToDocs(await GetSignedOutputUrl(s_Config.OutputZipAssemblyFile), s_Config.OutputZipAssemblyFile);
             }
             catch (Exception e)
             {

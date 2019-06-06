@@ -92,6 +92,33 @@ namespace samplePlugin
             private long ticks;
         }
 
+        private static bool GetOnDemandFile(string name, string suffix, string headers, string requestContentOrFile,
+    string responseFile)
+        {
+            LogTrace("!ACESAPI:acesHttpOperation({0},{1},{2},{3},{4})",
+                name ?? "", suffix ?? "", headers ?? "", requestContentOrFile ?? "", responseFile ?? "");
+
+            int idx = 0;
+            while (true)
+            {
+                char ch = Convert.ToChar(Console.Read());
+                if (ch == '\x3')
+                {
+                    return true;
+                }
+                else if (ch == '\n')
+                {
+                    return false;
+                }
+
+                if (idx >= 16)
+                {
+                    return false;
+                }
+                idx++;
+            }
+        }
+
         public void RunWithArguments(Document doc, NameValueMap map)
         {
             // write diagnostics data
@@ -100,66 +127,88 @@ namespace samplePlugin
             var pathName = doc.FullFileName;
             LogTrace("Processing " + pathName);
 
+            string[] outputFileName = { "", "ResultSmall", "ResultLarge" };
+
             try
             {
-                // load processing parameters
-                string paramsJson = GetParametersToChange(map);
-
-                // update parameters in the doc
-                // start HeartBeat around ChangeParameters, it could be a long operation
-                using (new HeartBeat())
-                {
-                    ChangeParameters(doc, paramsJson);
-                }
-
-                // generate outputs
-                var docDir = Path.GetDirectoryName(doc.FullFileName);
-
                 var documentType = doc.DocumentType;
+                var iRuns = 1;
                 if (documentType == DocumentTypeEnum.kPartDocumentObject)
+                    iRuns = 2;
+                for (int iRun = 1; iRun <= iRuns; iRun++)
                 {
-                    var fileName = Path.Combine(docDir, "Result.ipt"); // the name must be in sync with OutputIpt localName in Activity
-                    LogTrace("Saving " + fileName);
-                    // start HeartBeat around Save, it could be a long operation
+                    // load processing parameters
+                    string paramsJson = GetParametersToChange(map, iRun);
+
+                    // update parameters in the doc
+                    // start HeartBeat around ChangeParameters, it could be a long operation
                     using (new HeartBeat())
                     {
-                        doc.SaveAs(fileName, false);
+                        ChangeParameters(doc, paramsJson);
                     }
-                    LogTrace("Saved as " + fileName);
 
-                    // save an image
-                    SaveImageFromPart(Path.Combine(docDir, "Result.bmp"), doc as PartDocument);
-                }
-                else // Assembly. That's already validated in ChangeParameters
-                {
-                    //Generate drawing document with assembly
-                    var idwPath = Path.ChangeExtension(Path.Combine(docDir, doc.DisplayName), "idw");
-                    LogTrace($"Generate drawing document");
-                    SaveAsIDW(idwPath, doc);
+                    var docDir = Path.GetDirectoryName(doc.FullFileName);
 
-                    // cannot ZIP opened assembly, so close it
-                    // start HeartBeat around Save, it could be a long operation
-                    using (new HeartBeat())
+                    if (documentType == DocumentTypeEnum.kPartDocumentObject)
                     {
-                        doc.Save2(true);
+                        PartDocument part = (PartDocument)doc;
+                        double mass = part.ComponentDefinition.MassProperties.Mass;
+                        string imageParamName = "ImageLight";
+
+                        // check the mass of the document and download proper image
+                        if (mass > 300.0)
+                            imageParamName = "ImageHeavy";
+
+                        // get Image from the OnDemand parameter
+                        GetOnDemandFile(imageParamName, "", "", "", $"file://{outputFileName[iRun]}.png");
                     }
-                    doc.Close(true);
 
-                    LogTrace("Zipping up updated Assembly.");
-
-                    // assembly lives in own folder under WorkingDir. Get the WorkingDir
-                    var workingDir = Path.GetDirectoryName(docDir);
-                    var fileName = Path.Combine(workingDir, "Result.zip"); // the name must be in sync with OutputIam localName in Activity
-
-                    if (File.Exists(fileName)) File.Delete(fileName);
-
-                    // start HeartBeat around ZipFile, it could be a long operation
-                    using (new HeartBeat())
+                    // generate outputs
+                    if (documentType == DocumentTypeEnum.kPartDocumentObject)
                     {
-                        ZipFile.CreateFromDirectory(Path.GetDirectoryName(pathName), fileName, CompressionLevel.Fastest, false);
-                    }
+                        var fileName = Path.Combine(docDir, $"{outputFileName[iRun]}.ipt"); // the name must be in sync with OutputIpt localName in Activity
+                        LogTrace("Saving " + fileName);
+                        // start HeartBeat around Save, it could be a long operation
+                        using (new HeartBeat())
+                        {
+                            doc.SaveAs(fileName, false);
+                        }
+                        LogTrace("Saved as " + fileName);
 
-                    LogTrace($"Saved as {fileName}");
+                        // save an image
+                        SaveImageFromPart(Path.Combine(docDir, $"{outputFileName[iRun]}.bmp"), doc as PartDocument);
+                    }
+                    else // Assembly. That's already validated in ChangeParameters
+                    {
+                        //Generate drawing document with assembly
+                        var idwPath = Path.ChangeExtension(Path.Combine(docDir, doc.DisplayName), "idw");
+                        LogTrace($"Generate drawing document");
+                        SaveAsIDW(idwPath, doc);
+
+                        // cannot ZIP opened assembly, so close it
+                        // start HeartBeat around Save, it could be a long operation
+                        using (new HeartBeat())
+                        {
+                            doc.Save2(true);
+                        }
+                        doc.Close(true);
+
+                        LogTrace("Zipping up updated Assembly.");
+
+                        // assembly lives in own folder under WorkingDir. Get the WorkingDir
+                        var workingDir = Path.GetDirectoryName(docDir);
+                        var fileName = Path.Combine(workingDir, "Result.zip"); // the name must be in sync with OutputIam localName in Activity
+
+                        if (File.Exists(fileName)) File.Delete(fileName);
+
+                        // start HeartBeat around ZipFile, it could be a long operation
+                        using (new HeartBeat())
+                        {
+                            ZipFile.CreateFromDirectory(Path.GetDirectoryName(pathName), fileName, CompressionLevel.Fastest, false);
+                        }
+
+                        LogTrace($"Saved as {fileName}");
+                    }
                 }
             }
             catch (Exception e)
@@ -276,9 +325,9 @@ namespace samplePlugin
         /// JSON content sample:
         ///   { "SquarePegSize": "0.24 in" }
         /// </returns>
-        private static string GetParametersToChange(NameValueMap map)
+        private static string GetParametersToChange(NameValueMap map, int index)
         {
-            string paramFile = (string) map.Value["_1"];
+            string paramFile = (string) map.Value[$"_{index}"];
             string json = File.ReadAllText(paramFile);
             LogTrace("Inventor Parameters JSON: \"" + json + "\"");
             return json;
