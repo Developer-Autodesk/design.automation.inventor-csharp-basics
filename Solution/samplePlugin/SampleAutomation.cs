@@ -28,7 +28,7 @@ using Path = System.IO.Path;
 using Inventor;
 using Newtonsoft.Json;
 using File = System.IO.File;
-using System.Threading;
+using Autodesk.Forge.DesignAutomation.Inventor.Utils;
 
 namespace samplePlugin
 {
@@ -46,77 +46,6 @@ namespace samplePlugin
         {
             LogTrace("Run called with {0}", doc.DisplayName);
             File.AppendAllText("output.txt", "Document name: " + doc.DisplayName);
-        }
-
-        private class HeartBeat : IDisposable
-        {
-            // default is 50s
-            public HeartBeat(int intervalMillisec=50000)
-            {
-                t = new Thread(() => {
-
-                    LogTrace("HeartBeating every {0}ms.", intervalMillisec);
-
-                    for (; ; )
-                    {
-                        Thread.Sleep((int)intervalMillisec);
-                        LogTrace("HeartBeat {0}.", (long)(new TimeSpan(DateTime.Now.Ticks - ticks).TotalSeconds));
-                    }
-
-                });
-
-                ticks = DateTime.Now.Ticks;
-                t.Start();
-            }
-
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    if (t != null)
-                    {
-                        LogTrace("Ending HeartBeat");
-                        t.Abort();
-                        t = null;
-                    }
-                }
-            }
-
-            private Thread t;
-            private long ticks;
-        }
-
-        private static bool GetOnDemandFile(string name, string suffix, string headers, string requestContentOrFile,
-    string responseFile)
-        {
-            LogTrace("!ACESAPI:acesHttpOperation({0},{1},{2},{3},{4})",
-                name ?? "", suffix ?? "", headers ?? "", requestContentOrFile ?? "", responseFile ?? "");
-
-            int idx = 0;
-            while (true)
-            {
-                char ch = Convert.ToChar(Console.Read());
-                if (ch == '\x3')
-                {
-                    return true;
-                }
-                else if (ch == '\n')
-                {
-                    return false;
-                }
-
-                if (idx >= 16)
-                {
-                    return false;
-                }
-                idx++;
-            }
         }
 
         public void RunWithArguments(Document doc, NameValueMap map)
@@ -160,7 +89,7 @@ namespace samplePlugin
                             imageParamName = "ImageHeavy";
 
                         // get Image from the OnDemand parameter
-                        GetOnDemandFile(imageParamName, "", "", "", $"file://{outputFileName[iRun]}.png");
+                        OnDemand.HttpOperation(imageParamName, "", "", "", $"file://{outputFileName[iRun]}.png");
                     }
 
                     // generate outputs

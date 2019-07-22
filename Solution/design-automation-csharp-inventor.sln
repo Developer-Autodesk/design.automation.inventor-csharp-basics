@@ -12,6 +12,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "samplePlugin", "samplePlugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debugPluginLocally", "debugPluginLocally\debugPluginLocally.csproj", "{96C767E6-7828-4545-A4C9-EA2346D9E17F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{4A4C6F63-67AB-43F8-9F1D-CB3BF1EC03AD}"
+	ProjectSection(SolutionItems) = preProject
+		BundlePlugin.targets = BundlePlugin.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F1C9D7E2-53A8-4E4E-AF9E-931CA891715D} = {4A4C6F63-67AB-43F8-9F1D-CB3BF1EC03AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F93AD5B9-6010-4FA8-95C0-46A956582DA8}
