@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autodesk.Forge.DesignAutomation.Inventor.Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autodesk.Forge.DesignAutomation.Inventor.Utils.1.0.0-beta1\lib\netstandard2.0\Autodesk.Forge.DesignAutomation.Inventor.Utils.dll</HintPath>
+      <HintPath>..\packages\Autodesk.Forge.DesignAutomation.Inventor.Utils.1.0.0-beta3\lib\netstandard2.0\Autodesk.Forge.DesignAutomation.Inventor.Utils.dll</HintPath>
     </Reference>
     <Reference Include="autodesk.inventor.interop, Version=23.0.0.0, Culture=neutral, PublicKeyToken=d84147f8b4276564, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

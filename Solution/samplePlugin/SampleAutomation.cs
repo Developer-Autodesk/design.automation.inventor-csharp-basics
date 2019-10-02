@@ -89,7 +89,7 @@ namespace samplePlugin
                             imageParamName = "ImageHeavy";
 
                         // get Image from the OnDemand parameter
-                        OnDemand.HttpOperation(imageParamName, "", "", "", $"file://{outputFileName[iRun]}.png");
+                        OnDemand.HttpOperation(imageParamName, "", null, "", $"file://{outputFileName[iRun]}.png");
                     }
 
                     // generate outputs
