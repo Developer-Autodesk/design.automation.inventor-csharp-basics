@@ -89,11 +89,15 @@ namespace samplePlugin
                             imageParamName = "ImageHeavy";
 
                         // if debug the samplePlugin locally, the images are already in the inputfiles folder.
-                        if (!File.Exists(Path.Combine(docDir, $"{outputFileName[iRun]}.png")))
+                        string imageFileName = $"{outputFileName[iRun]}.png";
+                        if (!File.Exists(Path.Combine(docDir, imageFileName)))
                         {
                             // get Image from the OnDemand parameter
-                            LogTrace($"Download images '{outputFileName[iRun]}.png' from the OnDemand parameter. ");
-                            OnDemand.HttpOperation(imageParamName, "", null, "", $"file://{outputFileName[iRun]}.png");
+                            LogTrace($"Download image '{imageFileName}' from the OnDemand parameter. ");
+                            if (!OnDemand.HttpOperation(imageParamName, "", null, $"file://{imageFileName}"))
+                            {
+                                LogError($"The onDemand operation to download the image '{imageFileName}' failed!");
+                            }
                         }
                     }
 
