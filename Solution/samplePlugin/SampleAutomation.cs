@@ -88,15 +88,12 @@ namespace samplePlugin
                         if (mass > 300.0)
                             imageParamName = "ImageHeavy";
 
-                        try
+                        // if debug the samplePlugin locally, the images are already in the inputfiles folder.
+                        if (!File.Exists(Path.Combine(docDir, $"{outputFileName[iRun]}.png")))
                         {
                             // get Image from the OnDemand parameter
+                            LogTrace($"Download images '{outputFileName[iRun]}.png' from the OnDemand parameter. ");
                             OnDemand.HttpOperation(imageParamName, "", null, "", $"file://{outputFileName[iRun]}.png");
-                        }
-                        catch (Exception e)
-                        {
-                            // if debug the samplePlugin locally, the onDemond process should fail as excepted.
-                            LogError("OnDemand processing failed. " + e.ToString());
                         }
                     }
 
