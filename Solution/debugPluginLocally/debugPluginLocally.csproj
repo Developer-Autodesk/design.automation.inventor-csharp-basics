@@ -53,8 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="inputFiles\box.ipt" />
-    <None Include="inputFiles\params.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\samplePlugin\samplePlugin.csproj">
