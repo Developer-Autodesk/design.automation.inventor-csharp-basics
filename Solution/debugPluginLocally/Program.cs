@@ -49,7 +49,7 @@ namespace debugPluginLocally
             // get solution directory
             string solutiondir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             string inputFilesDir = System.IO.Path.Combine(solutiondir, @"clientApp\inputFiles\");
-            string inputFilesLocalDir = System.IO.Path.Combine(solutiondir, @"debugPluginLocally\inputFiles\");
+            string inputFilesLocalDir = System.IO.Path.Combine(solutiondir, @"clientApp\inputFiles\");
 
             // get box.ipt absolute path
             string boxPath = System.IO.Path.Combine(inputFilesDir, "box.ipt");
