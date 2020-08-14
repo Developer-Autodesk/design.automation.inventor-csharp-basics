@@ -30,8 +30,9 @@
 2. Add to your env. variables
     * FORGE_CLIENT_ID
     * FORGE_CLIENT_SECRET
-3. Build solution and run clientApp project
-6. Outputs and Report file will be copied into My Documents folder
+3. Alternatively you can define the two variables in **.env** properties file located in your home folder
+4. Build solution and run clientApp project
+5. Outputs and Report file will be copied into My Documents folder
 
 # Understanding the sample
 A detailed description of the sample is available in [Docs/DeveloperNotes.md](Docs/DeveloperNotes.md).

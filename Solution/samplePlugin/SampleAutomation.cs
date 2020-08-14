@@ -50,6 +50,8 @@ namespace samplePlugin
 
         public void RunWithArguments(Document doc, NameValueMap map)
         {
+            //TODO: use NameValueMapHelper instead of NameValueMap
+
             // write diagnostics data
             LogInputData(doc, map);
 

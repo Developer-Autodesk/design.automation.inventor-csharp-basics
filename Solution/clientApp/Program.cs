@@ -574,6 +574,11 @@ namespace Autodesk.Inventor.IO.Sample
             return workItemId;
         }
 
+        /// <summary>
+        /// Consumer credentials are taken from system environment properties FORGE_CLIENT_ID and FORGE_CLIENT_SECRET if defined.
+        /// Otherwise, credentials are taken from .env properties file located in user home dir.
+        /// If still not defined, exception is thrown.
+        /// </summary>
         static void LoadConfig()
         {
             // read the config file from disk
@@ -584,15 +589,63 @@ namespace Autodesk.Inventor.IO.Sample
             // deserialize appProperties
             s_Config = configSer.Deserialize<AppProperties>(configContent);
 
+            string consumerKeyPropFile;
+            string consumerSecretPropFile;
+
             // read the security context from enviroment variables
-            s_Creds = new Credentials();
-            s_Creds.ConsumerKey = System.Environment.GetEnvironmentVariable("FORGE_CLIENT_ID");
-            s_Creds.ConsumerSecret = System.Environment.GetEnvironmentVariable("FORGE_CLIENT_SECRET");
+            string consumerKeySysEnv = System.Environment.GetEnvironmentVariable("FORGE_CLIENT_ID");
+            string consumerSecretSysEnv = System.Environment.GetEnvironmentVariable("FORGE_CLIENT_SECRET");
+
+            // read the security context from '.env' properties file located in user home dir
+            var properties = LoadProperties(System.Environment.GetEnvironmentVariable("userprofile") + "\\.env");
+            properties.TryGetValue("FORGE_CLIENT_ID", out consumerKeyPropFile);
+            properties.TryGetValue("FORGE_CLIENT_SECRET", out consumerSecretPropFile);
+
+            s_Creds = new Credentials
+            {
+                ConsumerKey = consumerKeySysEnv != null ? consumerKeySysEnv : consumerKeyPropFile, 
+                ConsumerSecret = consumerSecretSysEnv != null ? consumerSecretSysEnv : consumerSecretPropFile
+            };
+
             if (s_Creds.ConsumerKey == null || s_Creds.ConsumerSecret == null)
             {
-                Console.WriteLine("Enviroment variables with Forge credentials are not defined !!!");
+                Console.WriteLine("Environment variables with Forge credentials are not defined !!!");
                 throw new Exception();
             }
+        }
+
+        /// <summary>
+        /// Load properties from file.
+        /// Each line contains definition of the property in the following format:
+        /// 
+        /// propertyName = propertyValue
+        ///
+        /// Empty lines and commented out lines (those starting with hash character '#') are skipped.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        static Dictionary<string, string> LoadProperties(string filename)
+        {
+            var properties = new Dictionary<string, string>();
+
+            if (!File.Exists(filename))
+                return properties;
+
+            foreach (var row in File.ReadAllLines(filename))
+            {
+                if(row.Trim().StartsWith("#"))
+                    continue;   //skip comments
+
+                var idx = row.IndexOf("=");
+                if (idx == -1)
+                    continue;
+
+                string key = row.Substring(0, idx).Trim();
+                string value = row.Length > idx ? row.Substring(idx + 1).Trim() : "";
+                properties[key] = value;
+            }
+
+            return properties;
         }
 
         static void Main(string[] args)
