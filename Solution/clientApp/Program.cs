@@ -589,22 +589,26 @@ namespace Autodesk.Inventor.IO.Sample
             // deserialize appProperties
             s_Config = configSer.Deserialize<AppProperties>(configContent);
 
-            string consumerKeyPropFile;
-            string consumerSecretPropFile;
-
             // read the security context from enviroment variables
             string consumerKeySysEnv = System.Environment.GetEnvironmentVariable("FORGE_CLIENT_ID");
             string consumerSecretSysEnv = System.Environment.GetEnvironmentVariable("FORGE_CLIENT_SECRET");
 
-            // read the security context from '.env' properties file located in user home dir
-            var properties = LoadProperties(System.Environment.GetEnvironmentVariable("userprofile") + "\\.env");
-            properties.TryGetValue("FORGE_CLIENT_ID", out consumerKeyPropFile);
-            properties.TryGetValue("FORGE_CLIENT_SECRET", out consumerSecretPropFile);
+            string consumerKeyPropFile = null;
+            string consumerSecretPropFile = null;
+
+            if (consumerKeySysEnv == null || consumerSecretSysEnv == null)
+            {
+                // read the security context from '.env' properties file located in user home dir
+                var properties = LoadProperties(System.Environment.GetEnvironmentVariable("userprofile") + "\\.env");
+
+                properties.TryGetValue("FORGE_CLIENT_ID", out consumerKeyPropFile);
+                properties.TryGetValue("FORGE_CLIENT_SECRET", out consumerSecretPropFile);
+            }
 
             s_Creds = new Credentials
             {
-                ConsumerKey = consumerKeySysEnv != null ? consumerKeySysEnv : consumerKeyPropFile, 
-                ConsumerSecret = consumerSecretSysEnv != null ? consumerSecretSysEnv : consumerSecretPropFile
+                ConsumerKey = consumerKeySysEnv ?? consumerKeyPropFile, 
+                ConsumerSecret = consumerSecretSysEnv ?? consumerSecretPropFile
             };
 
             if (s_Creds.ConsumerKey == null || s_Creds.ConsumerSecret == null)
@@ -641,7 +645,7 @@ namespace Autodesk.Inventor.IO.Sample
                     continue;
 
                 string key = row.Substring(0, idx).Trim();
-                string value = row.Length > idx ? row.Substring(idx + 1).Trim() : "";
+                string value = row.Substring(idx + 1).Trim();
                 properties[key] = value;
             }
 
