@@ -293,7 +293,7 @@ namespace Autodesk.Inventor.IO.Sample
             dynamic payload = new JObject();
             payload.engine = s_Config.EngineName;
             payload.appbundles = new JArray($"{s_nickname}.{s_Config.AppId}+{s_alias}");
-            payload.commandLine = $"$(engine.path)\\InventorCoreConsole.exe /i $(args[{s_Config.ReqInputArgName}].path) /al $(appbundles[{s_Config.AppId}].path) $(args[{s_Config.ParamArgNameSmall}].path) $(args[{s_Config.ParamArgNameLarge}].path)";
+            payload.commandLine = $"$(engine.path)\\InventorCoreConsole.exe /i \"$(args[{s_Config.ReqInputArgName}].path)\" /al \"$(appbundles[{s_Config.AppId}].path)\" \"$(args[{s_Config.ParamArgNameSmall}].path)\" \"$(args[{s_Config.ParamArgNameLarge}].path)\"";
             payload.settings = new JObject();
             payload.parameters = parameters;
 
@@ -546,6 +546,10 @@ namespace Autodesk.Inventor.IO.Sample
                     )),
                     // This shows passing parameters and values into the plug-in
                     new JProperty($"{s_Config.ParamArgNameSmall}", new JObject(
+                        new JProperty("url", "data:application/json,{\"handleOffset\":\"9 in\", \"height\":\"16 in\"}")
+                    )), 
+                    // This one must duplicate the previous here just because we added this extra parameter to the activity to show more when processing the part WI
+                    new JProperty($"{s_Config.ParamArgNameLarge}", new JObject(
                         new JProperty("url", "data:application/json,{\"handleOffset\":\"9 in\", \"height\":\"16 in\"}")
                     )),
                     // must match the output parameter in activity

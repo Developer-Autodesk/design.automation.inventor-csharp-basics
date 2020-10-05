@@ -23,7 +23,7 @@ Say - if activity used for IPT generation then work item should use `OutputIpt` 
   "receiver": "everyone",
   "body": {
     "id": "ChangeParams",
-    "commandLine": "$(engine.path)\\InventorCoreConsole.exe /i $(args[InventorDoc].path) /al $(appbundles[ChangeParams].path) $(args[InventorParams].path)",
+    "commandLine": "$(engine.path)\\InventorCoreConsole.exe /i \"$(args[InventorDoc].path)\" /al \"$(appbundles[ChangeParams].path)\" \"$(args[InventorParams].path)\"",
     "parameters": {
       "InventorDoc": {
         "verb": "get",
