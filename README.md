@@ -1,5 +1,9 @@
-# Design Automation for Inventor sample
+# OBSOLETE
 
+⚠️ **Note:** This README file is now obsolete and should not be used as a reference. You can use [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=Autodesk.DesignAutomation2) as reference.
+
+# Design Automation for Inventor sample
+![](https://img.shields.io/badge/Obsolete-FF0000)
 ![Platforms](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
 ![.NET](https://img.shields.io/badge/.net-4.7-blue.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
